@@ -2,8 +2,6 @@
 
 An implementation of a Bradley Terry Model to generate [KRACH Rankings](https://hockeypowerrankings.com/About.html) for an ice hockey league that I worked with.
 
-**Bradley–Terry model**
-
 The **Bradley–Terry model** is a [probability model](https://en.wikipedia.org/wiki/Probability_theory) for the outcome of pairwise comparisons between items, teams, or objects.
 Given a pair of items $i$ and $j$ drawn from some [population](https://en.wikipedia.org/wiki/Population_(statistics)), it estimates the probability that the [pairwise comparison](https://en.wikipedia.org/wiki/Pairwise_comparison_(psychology)) $i > j$ turns out true, as
 
