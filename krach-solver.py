@@ -46,16 +46,28 @@ def main():
     
     # Calculate KRACH rankings
     print("Calculating KRACH rankings...")
-    sorted_ratings = calculator.calculate_rankings(team_results)
-    
-    # Display results
-    print("\nKRACH Rankings:")
-    print("=" * 60)
-    print(f"{'Rank':<4} {'Team':<40} {'Rating':<12}")
-    print("-" * 60)
-    
-    for rank, (team, rating) in enumerate(sorted_ratings.items(), 1):
-        print(f"{rank:<4} {team:<40} {rating:<12.2f}")
+    try:
+        sorted_ratings = calculator.calculate_rankings(team_results)
+        
+        if sorted_ratings.empty:
+            print("No valid rankings could be calculated from the data.")
+            return
+        
+        # Display results
+        print("\nKRACH Rankings:")
+        print("=" * 60)
+        print(f"{'Rank':<4} {'Team':<40} {'Rating':<12}")
+        print("-" * 60)
+        
+        for rank, (team, rating) in enumerate(sorted_ratings.items(), 1):
+            print(f"{rank:<4} {team:<40} {rating:<12.2f}")
+            
+    except ValueError as e:
+        print(f"Error calculating rankings: {e}")
+        return
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        return
 
 
 if __name__ == "__main__":
