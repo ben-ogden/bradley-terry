@@ -17,6 +17,58 @@ where $p_i$ is a positive [real-valued](https://en.wikipedia.org/wiki/Real_numbe
 For example, $p_i$ might represent the skill of a team in a sports tournament and $\Pr(i > j)$ the probability that $i$ wins a game against $j$.  Or $p_i$ might represent the quality or desirability of a commercial product and $\Pr(i > j)$ the probability that a consumer will prefer product $i$ over product $j$.
 
 
+## Installation
+
+1. Install Python dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+2. Install Chrome browser (required for web scraping)
+
+3. Install ChromeDriver:
+   - **macOS**: `brew install chromedriver`
+   - **Linux**: Download from [ChromeDriver downloads](https://chromedriver.chromium.org/)
+   - **Windows**: Download from [ChromeDriver downloads](https://chromedriver.chromium.org/)
+
+## Usage
+
+### Fetch Team Statistics
+To scrape and save team statistics from gamesheetstats.com:
+```bash
+python fetch-stats.py
+```
+
+### Calculate KRACH Rankings
+To calculate and display KRACH rankings:
+```bash
+python krach-solver.py
+```
+
+The KRACH solver will:
+1. First try to load existing data from `team_results.pkl`
+2. If no data exists, it will automatically scrape fresh data
+3. Calculate KRACH ratings using the Bradley-Terry model
+4. Display formatted rankings
+
+
+<img src="assets/krach-solver.png" alt="KRACH Solver Output" width="500">
+
+### Configuration
+Edit `config.py` to modify:
+- Division and team IDs
+- Web scraping delays
+- KRACH algorithm parameters
+- File paths
+
+## How It Works
+
+1. **Web Scraping**: Uses Selenium to scrape team statistics from gamesheetstats.com
+2. **Data Processing**: Builds a pairwise comparison matrix from game results
+3. **KRACH Calculation**: Implements the Bradley-Terry model to calculate team ratings
+4. **Rankings**: Sorts teams by their KRACH ratings
+
+
 ### Reference
 
 [Bradley-Terry Model | Wikipedia](https://en.wikipedia.org/wiki/Bradley%E2%80%93Terry_model)
