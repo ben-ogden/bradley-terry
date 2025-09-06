@@ -4,17 +4,24 @@ KRACH (Ken's Ratings for American College Hockey) calculator implementation.
 
 import numpy as np
 import pandas as pd
+from typing import List, Tuple
 from config import KRACH_ALPHA, KRACH_SCALING_FACTOR, KRACH_MAX_ITERATIONS, KRACH_CONVERGENCE_THRESHOLD
 
 
 class KRACHCalculator:
-    """Calculator for KRACH ratings using the Bradley-Terry model"""
+    """
+    Calculator for KRACH ratings using the Bradley-Terry model.
+    
+    KRACH (Ken's Ratings for American College Hockey) is a rating system
+    that uses the Bradley-Terry model to rank teams based on pairwise
+    comparisons from game results.
+    """
     
     def __init__(self, alpha=KRACH_ALPHA, scaling_factor=KRACH_SCALING_FACTOR):
         self.alpha = alpha
         self.scaling_factor = scaling_factor
     
-    def build_pairwise_matrix(self, team_results):
+    def build_pairwise_matrix(self, team_results: List[List[List[str]]]) -> pd.DataFrame:
         """
         Build the pairwise comparison matrix from team results.
         
@@ -50,7 +57,7 @@ class KRACHCalculator:
 
         return pairwise_matrix
     
-    def solve_krach(self, pairwise_matrix):
+    def solve_krach(self, pairwise_matrix: pd.DataFrame) -> pd.Series:
         """
         Solve for the KRACH rating for each team using iterative method.
         
@@ -83,7 +90,7 @@ class KRACHCalculator:
 
         return P_scaled
     
-    def calculate_rankings(self, team_results):
+    def calculate_rankings(self, team_results: List[List[List[str]]]) -> pd.Series:
         """
         Calculate KRACH rankings from team results.
         
