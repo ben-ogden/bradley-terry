@@ -20,12 +20,29 @@ class HockeyWebScraper:
     def _setup_chrome_options(self):
         """Setup Chrome driver options"""
         options = Options()
-        options.headless = CHROME_OPTIONS['headless']
-        options.add_argument('--disable-gpu') if CHROME_OPTIONS['disable_gpu'] else None
-        options.add_argument('--no-sandbox') if CHROME_OPTIONS['no_sandbox'] else None
-        options.add_argument('--disable-dev-shm-usage') if CHROME_OPTIONS['disable_dev_shm_usage'] else None
-        options.add_argument('--disable-extensions') if CHROME_OPTIONS['disable_extensions'] else None
-        options.add_argument(f'user-agent={CHROME_OPTIONS["user_agent"]}')
+        
+        # Use modern headless mode
+        if CHROME_OPTIONS['headless']:
+            options.add_argument('--headless=new')
+        
+        # Add other options
+        if CHROME_OPTIONS.get('no_sandbox'):
+            options.add_argument('--no-sandbox')
+        if CHROME_OPTIONS.get('disable_dev_shm_usage'):
+            options.add_argument('--disable-dev-shm-usage')
+        if CHROME_OPTIONS.get('disable_extensions'):
+            options.add_argument('--disable-extensions')
+        if CHROME_OPTIONS.get('disable_blink_features'):
+            options.add_argument(f'--disable-blink-features={CHROME_OPTIONS["disable_blink_features"]}')
+        
+        # Set user agent
+        if CHROME_OPTIONS.get('user_agent'):
+            options.add_argument(f'--user-agent={CHROME_OPTIONS["user_agent"]}')
+        
+        # Modern Chrome options to avoid detection
+        options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        options.add_experimental_option('useAutomationExtension', False)
+        
         return options
     
     def get_team_urls(self, division_url):
