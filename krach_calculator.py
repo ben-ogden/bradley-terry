@@ -31,29 +31,67 @@ class KRACHCalculator:
         
         Returns:
             pandas.DataFrame: Pairwise comparison matrix
+            
+        Raises:
+            ValueError: If team_results is empty or contains invalid data
         """
-        # Get a list of all the teams
-        teams = list(
-            set([game[0] for team in team_results for game in team] +
-                [game[1] for team in team_results for game in team]))
-
+        if not team_results:
+            raise ValueError("team_results cannot be empty")
+        
+        # Validate and collect all teams with error handling
+        teams = set()
+        for team in team_results:
+            if not team:  # Skip empty team results
+                continue
+            for game in team:
+                if not isinstance(game, list) or len(game) < 3:
+                    print(f"Warning: Skipping invalid game data: {game}")
+                    continue
+                teams.add(game[0])  # home_team
+                teams.add(game[1])  # visitor_team
+        
+        if not teams:
+            raise ValueError("No valid team data found in team_results")
+        
+        teams = list(teams)
+        
         # Initialize the pairwise comparison matrix with float dtype
         pairwise_matrix = pd.DataFrame(0.0, index=teams, columns=teams, dtype=float)
 
-        # Populate the pairwise comparison matrix
+        # Populate the pairwise comparison matrix with validation
         for team in team_results:
             if not team:  # Skip empty team results
                 continue
                 
+            # Validate team has at least one game
+            if not isinstance(team[0], list) or len(team[0]) < 3:
+                print(f"Warning: Skipping team with invalid first game: {team[0] if team else 'empty'}")
+                continue
+                
             home_team = team[0][0]
+            
             for game in team:
+                if not isinstance(game, list) or len(game) < 3:
+                    print(f"Warning: Skipping invalid game data: {game}")
+                    continue
+                    
                 visitor_team = game[1]
                 result = game[2]
+                
+                # Validate team names exist in our matrix
+                if home_team not in teams or visitor_team not in teams:
+                    print(f"Warning: Skipping game with unknown teams: {home_team} vs {visitor_team}")
+                    continue
                 
                 if result.startswith('W'):
                     pairwise_matrix.loc[home_team, visitor_team] += 1.0
                 elif result.startswith('T'):
                     pairwise_matrix.loc[home_team, visitor_team] += 0.5
+                elif result.startswith('L'):
+                    # Losses are already handled by the other team's win
+                    pass
+                else:
+                    print(f"Warning: Unknown game result '{result}' for {home_team} vs {visitor_team}")
 
         return pairwise_matrix
     
@@ -66,7 +104,16 @@ class KRACHCalculator:
         
         Returns:
             pandas.Series: KRACH ratings scaled by the scaling factor
+            
+        Raises:
+            ValueError: If pairwise_matrix is empty or invalid
         """
+        if pairwise_matrix.empty:
+            raise ValueError("pairwise_matrix cannot be empty")
+        
+        if len(pairwise_matrix) == 0:
+            raise ValueError("pairwise_matrix must contain at least one team")
+        
         # Initialize the P values
         P = pd.Series(np.ones(len(pairwise_matrix)), index=pairwise_matrix.index)
 
@@ -99,7 +146,16 @@ class KRACHCalculator:
         
         Returns:
             pandas.Series: Sorted KRACH ratings from highest to lowest
+            
+        Raises:
+            ValueError: If team_results is empty or contains no valid data
         """
-        pairwise_matrix = self.build_pairwise_matrix(team_results)
-        krach_ratings = self.solve_krach(pairwise_matrix)
-        return krach_ratings.sort_values(ascending=False)
+        if not team_results:
+            raise ValueError("team_results cannot be empty")
+        
+        try:
+            pairwise_matrix = self.build_pairwise_matrix(team_results)
+            krach_ratings = self.solve_krach(pairwise_matrix)
+            return krach_ratings.sort_values(ascending=False)
+        except Exception as e:
+            raise ValueError(f"Failed to calculate KRACH rankings: {str(e)}")
