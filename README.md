@@ -12,7 +12,7 @@ $$
 
 *Equation 1*
 
-where $p_i$ is a positive [real-valued](https://en.wikipedia.org/wiki/Real_number) score assigned to individual $i$.  The comparison $i > j$ can be read as "$i$ is preferred to $j$", "$i$ ranks higher than $j$", or "$i$ beats $j$", depending on the application.
+where $p_i$ is a positive [real-valued](https://en.wikipedia.org/wiki/Real_number) score assigned to individual $i$.  The comparison $i > j$ can be read as " $i$ is preferred to $j$ ", " $i$ ranks higher than $j$ ", or " $i$ beats $j$ ", depending on the application.
 
 For example, $p_i$ might represent the skill of a team in a sports tournament and $\Pr(i > j)$ the probability that $i$ wins a game against $j$.  Or $p_i$ might represent the quality or desirability of a commercial product and $\Pr(i > j)$ the probability that a consumer will prefer product $i$ over product $j$.
 
@@ -63,7 +63,7 @@ Edit `config.py` to modify:
 
 ## How It Works
 
-1. **Web Scraping**: Uses Selenium to scrape team statistics from gamesheetstats.com
+1. **Web Scraping**: Uses Selenium to scrape team statistics
 2. **Data Processing**: Builds a pairwise comparison matrix from game results
 3. **KRACH Calculation**: Implements the Bradley-Terry model to calculate team ratings
 4. **Rankings**: Sorts teams by their KRACH ratings
